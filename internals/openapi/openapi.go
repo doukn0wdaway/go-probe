@@ -159,14 +159,7 @@ func GenerateJsonString(routes []router.Route) string {
 }
 
 func GenerateSwaggerDocHtml(routes []router.Route) string {
-	openapiMap := generateSwaggerDocMap(routes)
-	openapiJSON, err := json.Marshal(openapiMap)
-	if err != nil {
-		openapiJSON = []byte(`{}`)
-	}
-
-	jsJSON, _ := json.Marshal(string(openapiJSON))
-
+	openapiJson := GenerateJsonString(routes)
 	return fmt.Sprintf(`<!DOCTYPE html>
 <html>
   <head>
@@ -178,7 +171,7 @@ func GenerateSwaggerDocHtml(routes []router.Route) string {
     <div id="swagger-ui"></div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.29.0/swagger-ui-bundle.min.js"></script>
     <script defer>
-      const spec = JSON.parse(%s);
+      const spec = %s;
       const ui = SwaggerUIBundle({
         spec: spec,
         dom_id: '#swagger-ui',
@@ -189,5 +182,5 @@ func GenerateSwaggerDocHtml(routes []router.Route) string {
       });
     </script>
   </body>
-</html>`, string(jsJSON))
+</html>`, string(openapiJson))
 }
